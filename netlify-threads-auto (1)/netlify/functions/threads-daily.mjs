@@ -4,11 +4,13 @@ export default async () => {
   try {
     const result = await runDailyPost({ env: process.env });
     console.log(JSON.stringify({
-      status: result.status,
-      postId: result.postId ?? null,
-      textLength: result.text.length,
-    }));
-
+  status: result.status,
+  postId: result.postId ?? null,
+  textLength: result.text.length,
+  ...(result.status === 'dry_run'
+    ? { generatedText: result.text }
+    : {}),
+}));
     return Response.json(result, { status: 200 });
   } catch (error) {
     console.error(JSON.stringify({
